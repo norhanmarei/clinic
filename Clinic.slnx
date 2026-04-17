@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="Clinic.Api/Clinic.Api.csproj" />
-  <Project Path="Clinic.Application/Clinic.Application.csproj" />
-  <Project Path="Clinic.Domain/Clinic.Domain.csproj" />
-  <Project Path="Clinic.Infra/Clinic.Infra.csproj" />
+  <Project Path="src/Clinic.Api/Clinic.Api.csproj" />
+  <Project Path="src/Clinic.Application/Clinic.Application.csproj" />
+  <Project Path="src/Clinic.Domain/Clinic.Domain.csproj" />
+  <Project Path="src/Clinic.Infra/Clinic.Infra.csproj" />
 </Solution>
