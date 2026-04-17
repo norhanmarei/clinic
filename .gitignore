@@ -1,0 +1,35 @@
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+
+# IDEs
+.vscode/
+.idea/
+
+# .NET
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# ASP.NET Core
+appsettings.Development.json
+
+# EF Core
+Migrations/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# secrets
+*.secrets.json
+
+# publish output
+publish/
