@@ -1,9 +1,9 @@
-using App.Domain.Entities;
-
+using App.Application.DTOs;
+using App.Application.Common.Results;
 namespace App.Application.Interfaces.Services
 {
   public interface IClinicService 
   {
-    public Task<Clinic?> GetByNameAsync(string name, CancellationToken token = default);
+    public Task<Result<GetClinicByNameResponse>> GetByNameAsync(string name, CancellationToken token = default);
   }
 }
