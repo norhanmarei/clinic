@@ -1,5 +1,6 @@
 using App.Application.Interfaces.Services;
-using App.Domain.Entities;
+using App.Application.DTOs;
+using App.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Api.Controllers.V1
@@ -10,16 +11,15 @@ namespace App.Api.Controllers.V1
   {
     private readonly IClinicService _service = service;
 
-    [HttpGet("{name}")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      public async Task<ActionResult<Clinic?>> GetByNameAsync(string name, CancellationToken token = default)
-      {
-        var clinic = await _service.GetByNameAsync(name, token);
-        if(clinic is null) return NotFound($"Clinic with name {name} was not found");
-        return Ok(clinic);
-      }
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GetClinicByNameResponse>> GetByNameAsync([FromQuery] GetClinicByNameRequest request, CancellationToken token = default)
+    {
+      var result = await _service.GetByNameAsync(request.Name, token);
+      return result.ToActionResult<GetClinicByNameResponse>();
+    }
   }
 }
