@@ -7,8 +7,12 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using App.Application.Validators;
 using App.Api.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+//Serilog setup
+builder.Host.UseSerilog((ctx, lc) =>
+    lc.ReadFrom.Configuration(ctx.Configuration));
 
 //Controllers
 builder.Services.AddControllers();
@@ -40,6 +44,8 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseExceptionHandler();
+// serilog automatic request logging
+app.UseSerilogRequestLogging();
 app.MapControllers();
 
 app.Run();

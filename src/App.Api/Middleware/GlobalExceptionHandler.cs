@@ -21,8 +21,10 @@ public sealed class GlobalExceptionHandler
     };
   public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken ct)
   {
-    // TODO: log 
-    // logger.LogError(exception, "Unhandled exception occurred. TraceId: {TraceId}", httpContext.TraceIdentifier);
+    logger.LogError(exception,
+                    "Unhandled exception occurred. TraceId: {TraceId}, Path: {Path}", 
+                    httpContext.TraceIdentifier,
+                    httpContext.Request.Path);
     var (title, status) = MapException(exception);
     httpContext.Response.StatusCode = status; 
     var problemDetails = new ProblemDetails
