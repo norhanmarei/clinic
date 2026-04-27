@@ -6,6 +6,7 @@ using Scalar.AspNetCore;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using App.Application.Validators;
+using App.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<GetClinicByNameRequestValid
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -36,7 +39,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
-
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();
