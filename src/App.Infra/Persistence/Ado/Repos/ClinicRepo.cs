@@ -9,7 +9,7 @@ namespace App.Infra.Persistence.Ado.Repos
   {
     private readonly string _connectionString = 
         config.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Missing connection string 'Default'");
+        ?? throw new InvalidOperationException("Missing connection string 'DefaultConnection'");
 
     public async Task<Clinic?> GetByNameAsync(string name, CancellationToken token = default)
     {
