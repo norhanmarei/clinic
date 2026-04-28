@@ -2,6 +2,8 @@
 bin/
 obj/
 
+# Logs
+src/App.Api/Logs/
 # User-specific files
 *.user
 *.suo
