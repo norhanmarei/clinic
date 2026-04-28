@@ -19,7 +19,7 @@ namespace App.Api.Controllers.V1
     public async Task<ActionResult<GetClinicByNameResponse>> GetByNameAsync([FromQuery] GetClinicByNameRequest request, CancellationToken token = default)
     {
       var result = await _service.GetByNameAsync(request.Name, token);
-      return result.ToActionResult<GetClinicByNameResponse>();
+      return result.ToActionResult<GetClinicByNameResponse>(HttpContext);
     }
   }
 }
