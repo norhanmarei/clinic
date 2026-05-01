@@ -1,4 +1,12 @@
 <Solution>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Integration/">
+    <Project Path="tests/Integration/App.Api.IntegrationTests/App.Api.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Unit/">
+    <Project Path="tests/Unit/App.Application.Tests/App.Application.Tests.csproj" />
+    <Project Path="tests/Unit/App.Domain.Tests/App.Domain.Tests.csproj" />
+  </Folder>
   <Project Path="src/App.Api/App.Api.csproj" />
   <Project Path="src/App.Application/App.Application.csproj" />
   <Project Path="src/App.Domain/App.Domain.csproj" />
