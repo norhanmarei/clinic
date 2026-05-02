@@ -15,7 +15,7 @@ public abstract class BaseRepo(IConfiguration config)
           cmd.Parameters.AddWithValue(Name, Value ?? DBNull.Value);
       }
     }
-    protected async Task<T?> ExecuteReaderAsync<T>(string sql, (string Name, object? Value)[] parameters, Func<NpgsqlDataReader, T?> mapperFunc, CancellationToken ct)
+    protected async Task<T?> ExecuteSingleReaderAsync<T>(string sql, (string Name, object? Value)[] parameters, Func<NpgsqlDataReader, T?> mapperFunc, CancellationToken ct)
     {
       await using var conn = new NpgsqlConnection(_connectionString);
       await using var cmd = new NpgsqlCommand(sql, conn);
@@ -24,5 +24,19 @@ public abstract class BaseRepo(IConfiguration config)
       await using var reader = await cmd.ExecuteReaderAsync(ct);
       if(!await reader.ReadAsync(ct)) return default;
       return mapperFunc(reader);
+    }
+    protected async Task<IReadOnlyList<T>> ExecuteReaderAsync<T>(string sql, (string Name, object? Value)[] parameters, Func<NpgsqlDataReader, T> mapperFunc, CancellationToken ct)
+    {
+      await using var conn = new NpgsqlConnection(_connectionString);
+      await using var cmd = new NpgsqlCommand(sql, conn);
+      _SetParameters(cmd, parameters);
+      await conn.OpenAsync(ct);
+      await using var reader = await cmd.ExecuteReaderAsync(ct);
+      var list = new List<T>();
+      while(await reader.ReadAsync(ct))
+      {
+        list.Add(mapperFunc(reader));
+      }
+      return list;
     }
 }
