@@ -13,7 +13,19 @@ namespace App.Infra.Persistence.Ado.Repos
       {
         ("@name", name),
       };  
-      return await ExecuteReaderAsync<Clinic?>(sql, parameters, Mappers.Mappers.ToClinic, token);
+      return await ExecuteSingleReaderAsync<Clinic?>(sql, parameters, Mappers.Mappers.ToClinic, token);
+    }
+
+    public async Task<IReadOnlyList<Clinic>> GetAllAsync(int offset, int limit, CancellationToken token = default)
+    {
+      const string sql = "SELECT id, name, timezone, start_time, end_time, is_active, created_at, updated_at FROM clinics ORDER By id LIMIT @limit OFFSET @offset";
+      var parameters = new (string Name, object? Value)[] 
+      {
+        ("@limit", limit), 
+        ("@offset", offset)
+      };
+      return await ExecuteReaderAsync<Clinic>(sql, parameters, Mappers.Mappers.ToClinic, token);
+
     }
   }
 }

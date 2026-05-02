@@ -1,6 +1,6 @@
 using App.Domain.ValueObjects;
 namespace App.Application.DTOs;
-public record GetClinicByNameResponse
+public record GetClinicResponse
 {
     public Guid Id { get; init; }
 

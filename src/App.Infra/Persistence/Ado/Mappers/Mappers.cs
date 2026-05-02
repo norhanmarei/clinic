@@ -7,14 +7,14 @@ public static class Mappers
 {
   public static Clinic ToClinic(NpgsqlDataReader reader) 
   {
-    int idOrd = reader.GetOrdinal("id");
-    int nameOrd = reader.GetOrdinal("name");
-    int tzOrd = reader.GetOrdinal("timezone");
-    int startTimeOrd = reader.GetOrdinal("start_time");
-    int endTimeOrd = reader.GetOrdinal("end_time");
-    int isActiveOrd = reader.GetOrdinal("is_active");
-    int createdAtOrd = reader.GetOrdinal("created_at");
-    int updatedAtOrd = reader.GetOrdinal("updated_at");
+    int idOrd = 0;
+    int nameOrd = 1;
+    int tzOrd = 2;
+    int startTimeOrd = 3;
+    int endTimeOrd = 4;
+    int isActiveOrd = 5;
+    int createdAtOrd = 6;
+    int updatedAtOrd = 7;
 
     Guid id = reader.GetGuid(idOrd);
     string clinicName = reader.GetString(nameOrd);

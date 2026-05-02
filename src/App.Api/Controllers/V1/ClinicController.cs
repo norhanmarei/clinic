@@ -2,6 +2,8 @@ using App.Application.Interfaces.Services;
 using App.Application.DTOs;
 using App.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using App.Application.Common.Requests;
+using App.Application.Common.Results;
 
 namespace App.Api.Controllers.V1
 {
@@ -16,10 +18,21 @@ namespace App.Api.Controllers.V1
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetClinicByNameResponse>> GetByNameAsync([FromQuery] GetClinicByNameRequest request, CancellationToken token = default)
+    public async Task<ActionResult<GetClinicResponse>> GetByNameAsync([FromQuery] GetClinicByNameRequest request, CancellationToken token = default)
     {
       var result = await _service.GetByNameAsync(request.Name, token);
-      return result.ToActionResult<GetClinicByNameResponse>(HttpContext);
+      return result.ToActionResult<GetClinicResponse>(HttpContext);
+    }
+
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<PagedResult<GetClinicResponse>>> GetClinicsAsync([FromQuery] GetPagedResultRequest request, CancellationToken token = default)
+    {
+      var result = await _service.GetAllAsync(request, token);  
+      return result.ToActionResult<PagedResult<GetClinicResponse>>(HttpContext);
     }
   }
 }
