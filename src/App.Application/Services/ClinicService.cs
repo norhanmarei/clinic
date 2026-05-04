@@ -50,7 +50,7 @@ namespace App.Application.Services
         logger.LogWarning("Conflict: clinic with name [{Name}] already exists", name);
         return Result.Failure(new Error(ErrorType.Conflict, $"Clininc with name [{name}] already exists"));
       }
-      var clinic = Clinic.Create(name, request.Timezone, request.WorkingHours);
+      var clinic = Clinic.Create(name, new Timezone(request.Timezone), new WorkingHours(request.StartWorkingHour, request.EndWorkingHour));
       int affectedRows = await _repo.AddAsync(clinic, token);
       if(affectedRows == 0)
       {

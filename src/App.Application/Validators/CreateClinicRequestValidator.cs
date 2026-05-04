@@ -10,8 +10,15 @@ public class CreateClinicRequestValidator : AbstractValidator<CreateClinicReques
       .NotEmpty().WithMessage("Name is required")
       .MaximumLength(200);
 
-    RuleFor(x => x.WorkingHours)
-      .NotNull().WithMessage("Working hours are required");
+    RuleFor(x => x.StartWorkingHour)
+      .NotNull().WithMessage("Start working hour is required");
+
+    RuleFor(x => x.EndWorkingHour)
+      .NotNull().WithMessage("End working hour is required");
+
+    RuleFor(x => x.EndWorkingHour)
+      .GreaterThan(wh => wh.StartWorkingHour)
+      .WithMessage("End working hour must be greater than start working hour");
 
     RuleFor(x => x.Timezone)
       .NotNull().WithMessage("Timezone is required");
