@@ -5,44 +5,53 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Api.Extensions;
 public static class ResultExtensions
 {
-  public static ActionResult ToActionResult<T>(this Result<T> result, HttpContext httpContext)
+  private static ObjectResult _ToProblemDetails(
+      Error error,
+      HttpContext httpContext)
   {
-    // TODO: handle different success scenarios
-    if(result.IsSuccess)
-      return new OkObjectResult(result.Value);
-
-    string title = result.Error!.Type switch 
+    var title = error.Type switch
     {
-      ErrorType.BadRequest => "Bad Request", 
-      ErrorType.NotFound => "Not Found", 
-      ErrorType.Conflict => "Conflict", 
-      ErrorType.Unauthorized => "Forbidden", 
-      ErrorType.Unauthenticated => "Unauthenticated", 
-      _ => "Unexpected Error", 
+      ErrorType.BadRequest => "Bad Request",
+      ErrorType.NotFound => "Not Found",
+      ErrorType.Conflict => "Conflict",
+      ErrorType.Unauthorized => "Forbidden",
+      ErrorType.Unauthenticated => "Unauthenticated",
+      _ => "Unexpected Error",
     };
 
-    int status = result.Error.Type switch 
+    var status = error.Type switch
     {
-      ErrorType.BadRequest => StatusCodes.Status400BadRequest, 
-      ErrorType.NotFound => StatusCodes.Status404NotFound, 
-      ErrorType.Conflict => StatusCodes.Status409Conflict, 
-      ErrorType.Unauthenticated => StatusCodes.Status401Unauthorized, 
-      ErrorType.Unauthorized => StatusCodes.Status403Forbidden, 
-      _ => StatusCodes.Status500InternalServerError,  
+      ErrorType.BadRequest => StatusCodes.Status400BadRequest,
+      ErrorType.NotFound => StatusCodes.Status404NotFound,
+      ErrorType.Conflict => StatusCodes.Status409Conflict,
+      ErrorType.Unauthenticated => StatusCodes.Status401Unauthorized,
+      ErrorType.Unauthorized => StatusCodes.Status403Forbidden,
+      _ => StatusCodes.Status500InternalServerError,
     };
 
- 
-    var problemDetails= new ProblemDetails 
+    var problemDetails = new ProblemDetails
     {
-      Title = title, 
-      Status = status, 
-      Detail = result.Error.Message,
+      Title = title,
+      Status = status,
+      Detail = error.Message,
       Instance = httpContext.Request.Path
     };
 
     problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
     problemDetails.Extensions["timestamp"] = DateTime.UtcNow;
 
-    return new ObjectResult(problemDetails){StatusCode = status};
+    return new ObjectResult(problemDetails)
+    {
+      StatusCode = status
+    };
+  }
+  public static ActionResult ToActionResult<T>(this Result<T> result, HttpContext httpContext)
+  {
+    return _ToProblemDetails(result.Error!, httpContext);
+  }
+
+  public static ActionResult ToActionResult(this Result result, HttpContext httpContext)
+  {
+    return _ToProblemDetails(result.Error!, httpContext);
   }
 }

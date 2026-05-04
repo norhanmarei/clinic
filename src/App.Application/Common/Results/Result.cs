@@ -1,4 +1,23 @@
 namespace App.Application.Common.Results;
+public sealed class Result
+{
+  public bool IsSuccess { get; }
+  public Error? Error { get; }
+
+  private Result(Error error)
+  {
+     IsSuccess = false;
+     Error = error ?? throw new ArgumentNullException(nameof(error)); 
+  }
+
+  private Result()
+  {
+     IsSuccess = true;
+     Error = null;
+  }
+  public static Result Success() => new ();
+  public static Result Failure(Error error) => new (error);
+}
 public sealed class Result<T>
 {
   public bool IsSuccess { get; }

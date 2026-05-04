@@ -7,5 +7,6 @@ namespace App.Application.Interfaces.Services
   {
     public Task<Result<GetClinicResponse>> GetByNameAsync(string name, CancellationToken token = default);
     public Task<Result<PagedResult<GetClinicResponse>>> GetAllAsync(GetPagedResultRequest request, CancellationToken token = default);
+    public Task<Result> AddAsync(CreateClinicRequest request, CancellationToken token = default);
   }
 }

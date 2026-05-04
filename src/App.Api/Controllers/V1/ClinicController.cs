@@ -13,26 +13,46 @@ namespace App.Api.Controllers.V1
   {
     private readonly IClinicService _service = service;
 
-    [HttpGet]
+    [HttpGet("{name}", Name = "GetByNameAsync")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetClinicResponse>> GetByNameAsync([FromQuery] GetClinicByNameRequest request, CancellationToken token = default)
+    public async Task<ActionResult<GetClinicResponse>> GetByNameAsync(string name, CancellationToken token = default)
     {
-      var result = await _service.GetByNameAsync(request.Name, token);
-      return result.ToActionResult<GetClinicResponse>(HttpContext);
+      var result = await _service.GetByNameAsync(name.Trim(), token);
+      if(!result.IsSuccess)
+        return result.ToActionResult(HttpContext);
+      return new OkObjectResult(result.Value);
     }
 
-    [HttpGet("search")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PagedResult<GetClinicResponse>>> GetClinicsAsync([FromQuery] GetPagedResultRequest request, CancellationToken token = default)
+    public async Task<ActionResult<PagedResult<GetClinicResponse>>> GetAllAsync([FromQuery] GetPagedResultRequest request, CancellationToken token = default)
     {
       var result = await _service.GetAllAsync(request, token);  
-      return result.ToActionResult<PagedResult<GetClinicResponse>>(HttpContext);
+      if(!result.IsSuccess)
+        return result.ToActionResult(HttpContext);
+      return new OkObjectResult(result.Value);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> AddAsync([FromBody] CreateClinicRequest request, CancellationToken token = default)
+    {
+      var result = await _service.AddAsync(request, token);  
+      if(!result.IsSuccess)
+        return result.ToActionResult(HttpContext);
+      return CreatedAtRoute(
+          "GetByNameAsync",
+          new {name = request.Name.Trim()},
+          null
+          );
     }
   }
 }

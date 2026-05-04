@@ -6,6 +6,7 @@ using App.Application.Enums;
 using Microsoft.Extensions.Logging;
 using App.Application.Common.Requests;
 using App.Application.Mapping;
+using App.Domain.Entities;
 
 namespace App.Application.Services
 {
@@ -38,6 +39,24 @@ namespace App.Application.Services
         Data = clinicResponseList,
       };
       return Result<PagedResult<GetClinicResponse>>.Success(pagedResult);
+    }
+
+    public async Task<Result> AddAsync(CreateClinicRequest request, CancellationToken token = default)
+    {
+      string name = request.Name.Trim();
+      if(await _repo.Exists(name, token))
+      {
+        logger.LogWarning("Conflict: clinic with name [{Name}] already exists", name);
+        return Result.Failure(new Error(ErrorType.Conflict, $"Clininc with name [{name}] already exists"));
+      }
+      var clinic = Clinic.Create(name, request.Timezone, request.WorkingHours);
+      int affectedRows = await _repo.AddAsync(clinic, token);
+      if(affectedRows == 0)
+      {
+        logger.LogWarning("Error: failed to create a new clinic with name [{Name}]", name);
+        return Result.Failure(new Error(ErrorType.Unexpected, $"Failed to create clinic with name [{name}]"));
+      }
+      return Result.Success();
     }
   }
 }
