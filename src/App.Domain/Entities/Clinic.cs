@@ -61,9 +61,25 @@ namespace App.Domain.Entities
         clinic.UpdatedAt = updatedAt;
         return clinic;
       }
+
     public void ChangeName(string name)
     {
+      if(Name == name) return;
       _SetName(name);
+      UpdatedAt = Now();
+    }
+
+    public void ChangeTimezone(Timezone timezone)
+    {
+      if(Timezone == timezone) return;
+      Timezone = timezone ?? throw new ArgumentNullException(nameof(timezone));
+      UpdatedAt = Now();
+    }
+
+    public void ChangeWorkingHours(WorkingHours workingHours)
+    {
+      if(WorkingHours == workingHours) return;
+      WorkingHours = workingHours ?? throw new ArgumentNullException(nameof(workingHours));
       UpdatedAt = Now();
     }
 

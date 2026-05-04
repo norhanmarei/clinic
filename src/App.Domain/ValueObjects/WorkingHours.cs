@@ -1,6 +1,6 @@
 namespace App.Domain.ValueObjects
 {
-  public sealed class WorkingHours
+  public sealed record class WorkingHours
   {
     public TimeOnly Start {get;}
     public TimeOnly End {get;}

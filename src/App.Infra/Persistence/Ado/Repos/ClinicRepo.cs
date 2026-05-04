@@ -7,6 +7,16 @@ namespace App.Infra.Persistence.Ado.Repos
   public class ClinicRepo(IConfiguration config) : BaseRepo(config), IClinicRepo
   {
 
+    public async Task<Clinic?> GetByIdAsync(Guid id, CancellationToken token = default)
+    {
+      const string sql = "SELECT id, name, timezone, start_time, end_time, is_active, created_at, updated_at FROM clinics WHERE id=@id";
+      var parameters = new (string Name, object? Value, NpgsqlDbType Type)[] 
+      {
+        ("@id", id, NpgsqlDbType.Uuid),
+      };  
+      return await ExecuteSingleReaderAsync<Clinic?>(sql, parameters, Mappers.Mappers.ToClinic, token);
+    }
+
     public async Task<Clinic?> GetByNameAsync(string name, CancellationToken token = default)
     {
       const string sql = "SELECT id, name, timezone, start_time, end_time, is_active, created_at, updated_at FROM clinics WHERE name=@name";
@@ -60,6 +70,45 @@ namespace App.Infra.Persistence.Ado.Repos
       };
       var res = await ExecuteScalarAsync<bool>(sql, parameters, token); 
       return res;
+    }
+
+    public async Task<bool> Exists(Guid id, CancellationToken token = default)
+    {
+      const string sql = @"SELECT EXISTS (SELECT 1 FROM clinics WHERE id = @id)";
+      var parameters = new (string Name, object? Value, NpgsqlDbType Type)[]
+      {
+        ("@id", id, NpgsqlDbType.Uuid),
+      };
+      var res = await ExecuteScalarAsync<bool>(sql, parameters, token); 
+      return res;
+    }
+
+    ///<returns> The number of affected rows in database. 
+    public async Task<int> UpdateAsync(Clinic clinic, CancellationToken token = default)
+    {
+      const string sql = @"UPDATE clinics 
+                           SET
+                               name = @name, 
+                               timezone = @timezone,
+                               is_active = @is_active,
+                               start_time = @start_time,
+                               end_time = @end_time,
+                               updated_at = @updated_at
+                           WHERE id = @id";
+
+      var parameters = new (string Name, object? Value, NpgsqlDbType Type)[]
+      {
+        ("@id", clinic.Id, NpgsqlDbType.Uuid),
+        ("@name", clinic.Name, NpgsqlDbType.Varchar),
+        ("@timezone", clinic.Timezone.Id, NpgsqlDbType.Varchar),
+        ("@start_time", clinic.WorkingHours.Start, NpgsqlDbType.Time),
+        ("@end_time", clinic.WorkingHours.End, NpgsqlDbType.Time),
+        ("@is_active", clinic.IsActive, NpgsqlDbType.Boolean),
+        ("@updated_at", clinic.UpdatedAt, NpgsqlDbType.TimestampTz),
+      };
+
+      var affectedRows = await ExecuteNonQueryAsync(sql, parameters, token);
+      return affectedRows;
     }
   }
 }

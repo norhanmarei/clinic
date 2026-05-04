@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using App.Application.Common.Requests;
 using App.Application.Mapping;
 using App.Domain.Entities;
+using App.Domain.ValueObjects;
 
 namespace App.Application.Services
 {
@@ -55,6 +56,34 @@ namespace App.Application.Services
       {
         logger.LogWarning("Error: failed to create a new clinic with name [{Name}]", name);
         return Result.Failure(new Error(ErrorType.Unexpected, $"Failed to create clinic with name [{name}]"));
+      }
+      return Result.Success();
+    }
+
+    public async Task<Result> UpdateAsync(Guid id, UpdateClinicRequest request, CancellationToken token = default)
+    {
+      var clinic = await _repo.GetByIdAsync(id, token);
+      if(clinic is null)
+      {
+        logger.LogWarning("Not Found: clinic with id [{Id}] was not found", id);
+        return Result.Failure(new Error(ErrorType.NotFound, $"Clininc with id [{id}] was not found"));
+      }
+
+      string name = request.Name.Trim();
+      var timezone = new Timezone(request.Timezone);
+      var workingHours = new WorkingHours(request.Start, request.End);
+
+      clinic.ChangeName(name);
+      clinic.ChangeTimezone(timezone);
+      clinic.ChangeWorkingHours(workingHours);
+      if(request.IsActive && !clinic.IsActive)clinic.Activate();
+      else if(!request.IsActive && clinic.IsActive)clinic.Deactivate();
+
+      int affectedRows = await _repo.UpdateAsync(clinic, token);
+      if(affectedRows == 0)
+      {
+        logger.LogWarning("Error: failed to update clinic with id [{Id}]", id);
+        return Result.Failure(new Error(ErrorType.Unexpected, $"Failed to update clinic with id [{id}]"));
       }
       return Result.Success();
     }

@@ -1,6 +1,6 @@
 namespace App.Domain.ValueObjects
 {
-  public sealed class Timezone
+  public sealed record class Timezone
   {
     public string Id { get; }
     public TimeZoneInfo Info { get; }

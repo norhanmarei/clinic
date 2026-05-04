@@ -54,5 +54,18 @@ namespace App.Api.Controllers.V1
           null
           );
     }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] UpdateClinicRequest request, CancellationToken token = default)
+    {
+      var result = await _service.UpdateAsync(id, request, token);  
+      if(!result.IsSuccess)
+        return result.ToActionResult(HttpContext);
+      return NoContent();
+    }
   }
 }
