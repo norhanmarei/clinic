@@ -68,4 +68,35 @@ public static class Mappers
 
     return User.FromPersistence(id, username, passwordHash, roleEnum, isActive, clinicId, createdAt, updatedAt);
   }
+
+  public static Doctor ToDoctor(NpgsqlDataReader reader) 
+  {
+    int idOrd = reader.GetOrdinal("id");
+    int userIdOrd = reader.GetOrdinal("user_id");
+
+    int clinicIdOrd = reader.GetOrdinal("clinic_id");
+    int fullNameOrd = reader.GetOrdinal("full_name");
+
+    int specialtyOrd = reader.GetOrdinal("specialty");
+    int genderOrd = reader.GetOrdinal("gender");
+    int isActiveOrd = reader.GetOrdinal("is_active");
+
+    int createdAtOrd = reader.GetOrdinal("created_at");
+    int updatedAtOrd = reader.GetOrdinal("updated_at");
+
+    int id = reader.GetInt32(idOrd);
+    int userId = reader.GetInt32(userIdOrd);
+    Guid clinicId = reader.GetGuid(clinicIdOrd);
+
+    string fullname = reader.GetString(fullNameOrd);
+    string specialty = reader.GetString(specialtyOrd);
+    string gender = reader.GetString(genderOrd);
+
+    bool isActive = reader.GetBoolean(isActiveOrd);
+
+    DateTimeOffset createdAt = reader.GetFieldValue<DateTimeOffset>(createdAtOrd);
+    DateTimeOffset updatedAt = reader.GetFieldValue<DateTimeOffset>(updatedAtOrd);
+
+    return Doctor.FromPersistence(id, fullname, specialty, gender, isActive, userId, clinicId, createdAt, updatedAt);
+  }
 }

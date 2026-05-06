@@ -57,4 +57,30 @@ public static class Mappers
     }
     return result;
   }
+
+  public static GetDoctorResponse ToDoctorResponse(Doctor doctor)
+  {
+    return new GetDoctorResponse
+        {
+        Id = doctor.Id, 
+        FullName = doctor.FullName,
+        Specialty = doctor.Specialty,
+        Gender = doctor.Gender,
+        IsActive = doctor.IsActive,
+        UserId = doctor.UserId,
+        ClinicId = doctor.ClinicId,
+        CreatedAt = doctor.CreatedAt,
+        UpdatedAt = doctor.UpdatedAt
+        };
+  }
+
+  public static IReadOnlyList<GetDoctorResponse> ToDoctorResponse(IReadOnlyList<Doctor> list)
+  {
+    var result = new List<GetDoctorResponse>();
+    foreach(var doctor in list)
+    {
+      result.Add(ToDoctorResponse(doctor));
+    }
+    return result;
+  }
 }

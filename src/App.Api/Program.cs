@@ -26,6 +26,9 @@ builder.Services.AddScoped<IClinicService, ClinicService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IDoctorRepo, DoctorRepo>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 // Register all validators from an assembly
 builder.Services.AddValidatorsFromAssemblyContaining<GetClinicResponse>();
