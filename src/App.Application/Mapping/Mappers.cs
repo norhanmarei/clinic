@@ -25,4 +25,36 @@ public static class Mappers
     }
     return result;
   }
+
+  public static GetUserResponse ToUserResponse(User user)
+  {
+    string role = user.Role switch 
+    {
+      Domain.Enums.Role.admin => "admin", 
+      Domain.Enums.Role.doctor => "doctor", 
+      Domain.Enums.Role.receptionist => "receptionist", 
+      Domain.Enums.Role.unknown => "unknown", 
+      _ => "unknown"
+    };
+    return new GetUserResponse
+        {
+        Id = user.Id, 
+        Username = user.Username,
+        Role = role,
+        ClinicId = user.ClinicId,
+        IsActive = user.IsActive,
+        CreatedAt = user.CreatedAt,
+        UpdatedAt = user.UpdatedAt
+        };
+  }
+
+  public static IReadOnlyList<GetUserResponse> ToUserResponse(IReadOnlyList<User> list)
+  {
+    var result = new List<GetUserResponse>();
+    foreach(var user in list)
+    {
+      result.Add(ToUserResponse(user));
+    }
+    return result;
+  }
 }

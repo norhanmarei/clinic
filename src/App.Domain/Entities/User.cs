@@ -65,10 +65,26 @@ public class User
 
   public void ChangePassword(string passwordHash)
   {
-    if(PasswordHash == passwordHash) return;
     if (string.IsNullOrWhiteSpace(passwordHash))
       throw new ArgumentException("password is required");
+    if(PasswordHash == passwordHash) return;
     PasswordHash = passwordHash;
+    UpdatedAt = Now();
+  }
+
+  public void ChangeRole(Role role)
+  {
+    if(Role == role) return;
+    Role = role;
+    UpdatedAt = Now();
+  }
+
+  public void ChangeClinicId(Guid clinicId)
+  {
+    if(clinicId == Guid.Empty)
+      throw new ArgumentException("clinic id is required");
+    if(ClinicId == clinicId) return;
+    ClinicId = clinicId;
     UpdatedAt = Now();
   }
 

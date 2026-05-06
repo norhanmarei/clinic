@@ -3,5 +3,6 @@ namespace App.Domain.Enums;
   {
     admin, 
     doctor, 
-    receptionist
+    receptionist,
+    unknown
   }

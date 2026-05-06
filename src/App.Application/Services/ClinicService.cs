@@ -16,6 +16,9 @@ namespace App.Application.Services
     private readonly IClinicRepo _repo = repo;
     public async Task<Result<GetClinicResponse>> GetByNameAsync(string name, CancellationToken token = default)
     {
+      if(name.Length > 200)
+        return Result<GetClinicResponse>.Failure(new Error(ErrorType.BadRequest, $"Clinic name must not exceed 200 characters"));
+
       var clinic = await _repo.GetByNameAsync(name, token);
       if(clinic is null)
       {
