@@ -83,4 +83,44 @@ public static class Mappers
     }
     return result;
   }
+
+  public static GetPatientResponse ToPatientResponse(Patient patient)
+  {
+    return new GetPatientResponse
+        {
+        Id = patient.Id, 
+        FullName = patient.FullName,
+        BirthDate = patient.BirthDate,
+        PhoneNumber = patient.PhoneNumber,
+        Email = patient.Email,
+        Gender = patient.Gender,
+        IsActive = patient.IsActive,
+        ClinicId = patient.ClinicId,
+        };
+  }
+
+  public static GetPatientResponse ToPatientResponse(int id, Patient patient)
+  {
+    return new GetPatientResponse
+        {
+        Id = id, 
+        FullName = patient.FullName,
+        BirthDate = patient.BirthDate,
+        PhoneNumber = patient.PhoneNumber,
+        Email = patient.Email,
+        Gender = patient.Gender,
+        IsActive = patient.IsActive,
+        ClinicId = patient.ClinicId,
+        };
+  }
+
+  public static IReadOnlyList<GetPatientResponse> ToPatientResponse(IReadOnlyList<Patient> list)
+  {
+    var result = new List<GetPatientResponse>();
+    foreach(var patient in list)
+    {
+      result.Add(ToPatientResponse(patient));
+    }
+    return result;
+  }
 }

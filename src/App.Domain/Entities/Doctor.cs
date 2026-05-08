@@ -30,7 +30,7 @@ public class Doctor
 
   private Doctor(int id, string fullName, string specialty, string gender, bool isActive, int userId, Guid clinicId, DateTimeOffset createdAt, DateTimeOffset updatedAt)
   {
-    Id = id >= 0 ? id : throw new ArgumentException("Domain: user id must be greater than or equal to 0");
+    Id = id >= 0 ? id : throw new ArgumentException("Domain: doctor id must be greater than or equal to 0");
     _SetName(fullName);
     Specialty = specialty ?? throw new ArgumentNullException(nameof(specialty));
     Gender = gender ?? throw new ArgumentNullException(nameof(gender));

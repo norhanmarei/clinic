@@ -2,6 +2,7 @@ using Npgsql;
 using App.Domain.Entities; 
 using App.Domain.ValueObjects;
 using App.Domain.Enums;
+using App.Infra.Extensions;
 
 namespace App.Infra.Persistence.Ado.Mappers;
 public static class Mappers
@@ -98,5 +99,35 @@ public static class Mappers
     DateTimeOffset updatedAt = reader.GetFieldValue<DateTimeOffset>(updatedAtOrd);
 
     return Doctor.FromPersistence(id, fullname, specialty, gender, isActive, userId, clinicId, createdAt, updatedAt);
+  }
+
+  public static Patient ToPatient(NpgsqlDataReader reader) 
+  {
+    int idOrd = reader.GetOrdinal("id");
+    int fullNameOrd = reader.GetOrdinal("full_name");
+    int birthDateOrd = reader.GetOrdinal("birth_date");
+    int genderOrd = reader.GetOrdinal("gender");
+    int emailOrd = reader.GetOrdinal("email");
+    int isActiveOrd = reader.GetOrdinal("is_active");
+    int clinicIdOrd = reader.GetOrdinal("clinic_id");
+    int createdAtOrd = reader.GetOrdinal("created_at");
+    int updatedAtOrd = reader.GetOrdinal("updated_at");
+
+    int id = reader.GetInt32(idOrd);
+
+    string fullname = reader.GetString(fullNameOrd);
+    DateOnly birthDate = reader.GetFieldValue<DateOnly>(birthDateOrd);
+    string gender = reader.GetString(genderOrd);
+    string email = reader.GetString(emailOrd);
+    string? phonenumber = reader.GetNullable<string>("phone_number");
+
+    Guid clinicId = reader.GetGuid(clinicIdOrd);
+
+    bool isActive = reader.GetBoolean(isActiveOrd);
+
+    DateTimeOffset createdAt = reader.GetFieldValue<DateTimeOffset>(createdAtOrd);
+    DateTimeOffset updatedAt = reader.GetFieldValue<DateTimeOffset>(updatedAtOrd);
+
+    return Patient.FromPersistence(id, fullname, birthDate, gender, email, phonenumber,isActive, clinicId, createdAt, updatedAt);
   }
 }
